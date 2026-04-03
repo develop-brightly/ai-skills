@@ -2,16 +2,15 @@
 name: feature-builder
 description: >
   Plan and scope new features using a collaborative 6-agent team: PM, Architect, Security, UX, Developer, and QA
-  who can communicate with each other and write structured markdown artifacts. Use this skill whenever
-  a user wants to implement something new, understand what needs to change to add a feature, write a
-  technical spec, figure out which files or database tables need to change, or translate business
-  requirements into working code. Trigger on phrases like: "I want to add X", "how would I implement Y",
-  "what would it take to build Z", "help me plan this feature", "I need to scope out this change",
-  "write the code for this feature", or any time a user describes a product idea and wants to understand
-  or execute the engineering work involved. Do NOT use for quick how-to questions that can be answered
-  directly (e.g., "how do I use this API?", "what does this function do?", "show me an example of X").
-  When in doubt, use this skill — the structured collaborative agent pipeline prevents costly rework
-  from missed edge cases, schema gaps, or untested code.
+  who communicate with each other and write structured markdown artifacts. Use when a user wants to
+  implement something new, understand what needs to change to add a feature, write a technical spec,
+  identify which files or database tables need to change, or translate business requirements into code.
+  Trigger on: "I want to add X", "how would I implement Y", "what would it take to build Z",
+  "help me plan this feature", "write the code for this feature", or any time a user describes a product
+  idea and wants to understand or execute the engineering work. Do NOT use for quick how-to questions
+  (e.g., "how do I use this API?", "what does this function do?", "show me an example of X").
+  When in doubt, use this skill — the structured pipeline prevents costly rework from missed edge cases,
+  schema gaps, or untested code.
 ---
 
 # Feature Builder — Collaborative Agent Team
