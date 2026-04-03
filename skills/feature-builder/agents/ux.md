@@ -152,15 +152,11 @@ What UX this spec explicitly does NOT cover in this iteration.
 
 Write the full markdown content to disk as a persistent artifact.
 
-### Step 6: Write the file
-
-Write the completed document to the **output path** you were given.
-
 ---
 
 ## Collaboration
 
-After writing the file, remain available. The Developer agent may send you a `SendMessage` with a question about a specific interaction detail. Answer concisely and specifically — name the component, layout, or copy to use.
+After writing the file, enter a **waiting state** — do not terminate. The Developer agent may send you a `SendMessage` with a question about a specific interaction detail. Answer concisely and specifically — name the component, layout, or copy to use.
 
 ---
 

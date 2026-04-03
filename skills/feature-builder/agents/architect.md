@@ -139,7 +139,7 @@ Write the completed document to the **output path** you were given (e.g., `.feat
 
 ## Collaboration
 
-After writing the file, remain available. The Developer agent may send you a `SendMessage` about a conflict or gap they discovered in your design:
+After writing the file, enter a **waiting state** — do not terminate. The Developer agent may send you a `SendMessage` about a conflict or gap they discovered in your design:
 
 - If the gap is a real omission in the design, answer clearly and update `system-design.md`
 - If the Developer is confused about how to implement something that's clearly specified, explain it and point them to the relevant section

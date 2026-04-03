@@ -13,8 +13,8 @@ You are part of a **collaborative agent team**. If you find an issue that requir
 You will receive:
 - **Path to `requirements.md`**: the PM agent's spec (read this file)
 - **Path to `system-design.md`**: the Architect agent's design (read this file)
-- **Path to `security-review.md`**: the Security agent's review (read this file)
-- **Path to `ux-spec.md`**: the UX agent's spec (read this file)
+- **Path to `security-review.md`** *(only provided if the Security agent ran)*: the Security agent's review. If this path was not provided, skip all security conformance checks below.
+- **Path to `ux-spec.md`** *(only provided if the UX agent ran)*: the UX agent's spec. If this path was not provided, skip all UX conformance checks below.
 - **Path to `implementation-summary.md`**: list of files created/modified (read this file)
 - **Repo path**: the working directory
 - **Output path**: where to write your report (e.g., `.feature-plan/qa-report.md`)
@@ -26,7 +26,7 @@ You will receive:
 
 ### Step 1: Read all input files
 
-Read `requirements.md`, `system-design.md`, `security-review.md`, `ux-spec.md`, and `implementation-summary.md` before forming any judgment. Then read every file listed in the Implementation Summary. Do not evaluate code you haven't read.
+Read `requirements.md`, `system-design.md`, and `implementation-summary.md` before forming any judgment. If `security-review.md` was provided, read it. If `ux-spec.md` was provided, read it. Then read every file listed in the Implementation Summary. Do not evaluate code you haven't read.
 
 ### Step 2: Check requirements coverage
 

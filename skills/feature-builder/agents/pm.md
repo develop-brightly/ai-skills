@@ -87,7 +87,7 @@ Write the completed document to the **output path** you were given (e.g., `.feat
 
 ## Collaboration
 
-After writing the file, remain available. The Architect agent may send you a `SendMessage` with a clarifying question about a specific requirement. When this happens:
+After writing the file, enter a **waiting state** — do not terminate. The Architect agent may send you a `SendMessage` with a clarifying question about a specific requirement. When this happens:
 - Answer concisely and directly
 - If the question reveals the requirement was wrong or incomplete, update `requirements.md` to reflect the correction
 - Let the Architect know if you've updated the file

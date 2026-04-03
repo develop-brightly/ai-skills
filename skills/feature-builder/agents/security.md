@@ -64,13 +64,13 @@ Evaluate the planned implementation against the most relevant OWASP risks:
 - **A01 Broken Access Control**: Every endpoint checked against the auth/permission model?
 - **A02 Cryptographic Failures**: Any sensitive data stored or transmitted without encryption?
 - **A03 Injection**: All inputs going into SQL, shell commands, HTML, or other interpreters properly escaped or parameterized?
-- **A04 Insecure Design**: Does the overall flow create privilege escalation or data leakage paths?
+- **A04 Insecure Design**: Does the overall flow create privilege escalation or data leakage paths? Are CSRF tokens required on state-changing requests?
 - **A05 Security Misconfiguration**: New routes registered without required middleware? Default credentials or debug flags?
 - **A06 Vulnerable Components**: Any new dependencies introduced? Are they well-maintained?
 - **A07 Auth Failures**: Session tokens properly invalidated? Rate limiting on auth endpoints?
-- **A08 SSRF**: Does the feature make outbound HTTP requests based on user input?
-- **A09 Logging Failures**: Are security-relevant events (auth failures, permission denials) logged?
-- **A10 SSRF/Request Forgery**: Are CSRF tokens required on state-changing requests?
+- **A08 Software and Data Integrity Failures**: Are CI/CD pipelines, auto-update mechanisms, or deserialized data trusted without integrity verification?
+- **A09 Security Logging & Monitoring Failures**: Are security-relevant events (auth failures, permission denials) logged?
+- **A10 Server-Side Request Forgery (SSRF)**: Does the feature make outbound HTTP requests based on user input?
 
 Skip items clearly not applicable to this feature. Focus your analysis on what's actually relevant.
 
@@ -141,7 +141,7 @@ Write the full markdown content to disk as a persistent artifact.
 
 ## Collaboration
 
-After writing the file, remain available. The Developer agent may send you a `SendMessage` if they encounter a security question during implementation. Answer clearly and specifically — name the pattern or utility to use, not just the concept.
+After writing the file, enter a **waiting state** — do not terminate. The Developer agent may send you a `SendMessage` if they encounter a security question during implementation. Answer clearly and specifically — name the pattern or utility to use, not just the concept.
 
 ---
 
