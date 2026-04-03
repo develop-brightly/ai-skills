@@ -74,9 +74,38 @@ Agents communicate via `SendMessage`. Each agent is assigned a name when spawned
 
 ---
 
-## Step 1: Intake requirements
+## Step 1: Intake and configure
 
 Read any referenced files. Vague requirements are fine — the PM agent's job is to elaborate them.
+
+**Ask the user two questions before proceeding:**
+
+**Question 1 — Which agents should run?**
+
+Present this as a multi-select checklist. PM and Architect are always included (they are required). The others are optional:
+
+```
+Which specialist agents should be included in this pipeline?
+
+[x] Security Agent   — threat modeling, OWASP review, auth/authz gaps
+[x] UX/Design Agent  — user flows, component specs, copy, accessibility
+[ ] All of the above (default)
+```
+
+If the user doesn't answer or says "default" / "all", include Security and UX.
+
+**Question 2 — Do you want to review before implementation?**
+
+```
+After planning is complete (PM + Architect + Security + UX), would you like to:
+
+  A) Review the planning artifacts and approve before the Developer writes any code  ← default
+  B) Run the full pipeline automatically without pausing
+```
+
+If the user doesn't answer, default to option A (pause for review).
+
+Store both answers — they shape the rest of the pipeline.
 
 Then create the output directory:
 ```bash
@@ -109,25 +138,57 @@ The Architect reads the requirements, explores the codebase deeply, and writes `
 
 ---
 
-## Step 4: Spawn Security and UX Agents (in parallel)
+## Step 4: Spawn specialist agents (conditional on Step 1 selections)
 
-Spawn both agents **at the same time** — they work independently from the same inputs and do not depend on each other.
+Only spawn the agents the user selected. Spawn any selected agents **at the same time** — they work independently and do not depend on each other.
 
-**Security agent** — Read `agents/security.md`. Spawn a subagent named **`security`** with:
+**Security agent** *(if selected)* — Read `agents/security.md`. Spawn a subagent named **`security`** with:
 - Path to `requirements.md`
 - Path to `system-design.md`
 - The working directory / repo path
 - The output path: `.feature-plan/security-review.md`
 - The name of the Architect agent it can message for design changes: **`architect`**
 
-**UX agent** — Read `agents/ux.md`. Spawn a subagent named **`ux`** with:
+**UX agent** *(if selected)* — Read `agents/ux.md`. Spawn a subagent named **`ux`** with:
 - Path to `requirements.md`
 - Path to `system-design.md`
 - The working directory / repo path
 - The output path: `.feature-plan/ux-spec.md`
 - The name of the PM agent it can message for UX clarifications: **`pm`**
 
-Wait for **both** to complete before proceeding. If the Security agent's recommendation is BLOCKED (critical design issues), surface this to the user and pause — do not spawn the Developer until the design is resolved.
+If neither agent was selected, skip directly to the human review gate (Step 4a).
+
+Wait for all selected agents to complete.
+
+---
+
+## Step 4a: Human review gate
+
+Present the planning artifacts to the user for review. Read and display each completed artifact in order:
+
+1. **Refined Requirements** (from `requirements.md`)
+2. `---`
+3. **System Design** (from `system-design.md`)
+4. `---` *(if Security ran)*
+5. **Security Review** (from `security-review.md`) — if recommendation is **BLOCKED**, call this out prominently before asking for approval
+6. `---` *(if UX ran)*
+7. **UX Spec** (from `ux-spec.md`)
+
+Then ask:
+
+```
+Planning is complete. Before the Developer writes any code, would you like to:
+
+  A) Approve and proceed to implementation  ← proceed when selected
+  B) Request changes  ← describe what to revise; re-run the affected agent(s) before continuing
+  C) Stop here — planning artifacts only, no implementation needed
+```
+
+- If **A**: proceed to Step 5.
+- If **B**: apply the requested changes by re-running the relevant agent(s) with updated instructions, then return to Step 4a.
+- If **C**: skip to Step 7 (final deliverables), omitting implementation and QA.
+
+**Skip this gate** if the user chose option B ("run automatically") in Step 1. In that case, if the Security review is BLOCKED, still pause and surface the issue — never auto-proceed past a BLOCKED security recommendation.
 
 ---
 
@@ -136,8 +197,8 @@ Wait for **both** to complete before proceeding. If the Security agent's recomme
 Read `agents/developer.md`. Spawn a subagent named **`developer`** with:
 - Path to `requirements.md`
 - Path to `system-design.md`
-- Path to `security-review.md`
-- Path to `ux-spec.md`
+- Path to `security-review.md` *(only if Security agent ran)*
+- Path to `ux-spec.md` *(only if UX agent ran)*
 - The working directory / repo path
 - The output path: `.feature-plan/implementation-summary.md`
 - The name of the Architect agent it can message for design questions: **`architect`**
@@ -151,8 +212,8 @@ The Developer implements the code and writes `implementation-summary.md`. If it 
 Read `agents/qa.md`. Spawn a subagent named **`qa`** with:
 - Path to `requirements.md`
 - Path to `system-design.md`
-- Path to `security-review.md`
-- Path to `ux-spec.md`
+- Path to `security-review.md` *(only if Security agent ran)*
+- Path to `ux-spec.md` *(only if UX agent ran)*
 - Path to `implementation-summary.md`
 - The working directory / repo path
 - The output path: `.feature-plan/qa-report.md`
@@ -164,23 +225,23 @@ The QA agent reads all implemented files, validates coverage, runs tests if poss
 
 ## Step 7: Present final deliverables
 
-Read all six markdown files and deliver them in one response, in this order:
+Read all completed artifact files and deliver them in one response. Include only the artifacts that were actually produced:
 
-1. **Refined Requirements** (from `requirements.md`)
+1. **Refined Requirements** (from `requirements.md`) — always present
 2. `---`
-3. **System Design** (from `system-design.md`)
-4. `---`
+3. **System Design** (from `system-design.md`) — always present
+4. `---` *(if Security ran)*
 5. **Security Review** (from `security-review.md`)
-6. `---`
+6. `---` *(if UX ran)*
 7. **UX Spec** (from `ux-spec.md`)
-8. `---`
+8. `---` *(if implementation ran)*
 9. **Implementation Summary** (from `implementation-summary.md`)
-10. `---`
+10. `---` *(if QA ran)*
 11. **QA Validation Report** (from `qa-report.md`)
 
-Then tell the user:
-
-> "All six artifacts have been saved to `.feature-plan/`. The PM spec drives everything downstream — if any requirement looks wrong, correct it before acting on the implementation. The QA report flags any gaps or issues to address before shipping."
+Then tell the user which artifacts were saved to `.feature-plan/` and note:
+- If implementation ran: "The QA report flags any gaps or issues to address before shipping."
+- If stopped at planning: "Implementation was not run. Approve the plan above and ask me to proceed when ready."
 
 ---
 
