@@ -1,0 +1,44 @@
+{
+  "skill_name": "codebase-diligence",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Do a full codebase audit on the repo at /Users/ericwellnitz/dev/ai-skills. I want the whole report — structure, stack, dependencies, git history, quality indicators, docs, everything.",
+      "expected_output": "A complete codebase-diligence-report.md written to the ai-skills repo root. The report contains all 10 sections in order (Executive Summary through Recommendations), uses severity emoji tags (🔴/🟡/🟢) in at least the sections that can produce findings, and ends with at least one concrete recommendation.",
+      "files": [],
+      "expectations": [
+        "The report file codebase-diligence-report.md is written to the repo root",
+        "The report contains all required sections: Executive Summary, Repository Overview, Tech Stack, Dependency Health, Git History & Contributor Activity, Code Quality Indicators, Documentation Assessment, Configuration & Secrets Hygiene, Findings Summary, and Recommendations",
+        "At least one section contains a severity tag line using 🔴, 🟡, or 🟢 emoji",
+        "The Recommendations section contains at least one item tagged [CRITICAL], [IMPORTANT], or [NICE TO HAVE]",
+        "The report header contains the repo name and a generated date"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I just inherited a repo I've never seen before. Can you do a diligence report on it? Repo is at ~/dev/mystery-project. I want to understand the state of it — is it healthy, are there risks, what should I know?",
+      "expected_output": "A complete report written to ~/dev/mystery-project/codebase-diligence-report.md. Because this is a sparse repo, the report should explicitly call out missing elements (no README, no tests, no CI, etc.) and flag them appropriately with 🔴 or 🟡 severity. The Recommendations section should be non-empty and actionable.",
+      "files": [],
+      "expectations": [
+        "The report is written to the target repo directory, not the current working directory",
+        "Absent elements (e.g. missing lock file, missing README, missing test directory) are reported as ❌ Absent rather than being silently omitted",
+        "The Findings Summary section contains at least one 🔴 or 🟡 finding",
+        "Each finding in the Recommendations section names a specific file or action (not vague advice like 'improve documentation')",
+        "The Executive Summary mentions the most significant risk or concern found"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Can you do a quick diligence on the ai-skills repo but just focus on the git history and contributors? I want to know who's been active, if there's a bus factor concern, and how commit discipline looks.",
+      "expected_output": "A shorter focused report written to the repo root containing only the Executive Summary, Git History & Contributor Activity section, and Recommendations. The directory structure, tech stack, dependency, quality, docs, and secrets sections are omitted. The git section contains commit count, contributor breakdown, bus factor assessment, and commit message pattern observations.",
+      "files": [],
+      "expectations": [
+        "The report contains a Git History & Contributor Activity section with contributor names and commit counts",
+        "The report does NOT contain a Dependency Health section or a Documentation Assessment section",
+        "The report contains an Executive Summary and a Recommendations section",
+        "A bus factor assessment is included (either flagging a concern or confirming healthy distribution)",
+        "The report is shorter than a full analysis report would be — focused mode omits non-requested sections"
+      ]
+    }
+  ]
+}
