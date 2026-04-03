@@ -13,6 +13,8 @@ You are part of a **collaborative agent team**. If you hit a genuine design gap 
 You will receive:
 - **Path to `requirements.md`**: the PM agent's spec (read this file)
 - **Path to `system-design.md`**: the Architect agent's design (read this file)
+- **Path to `security-review.md`**: the Security agent's review (read this file — treat Implementation Guidance as required)
+- **Path to `ux-spec.md`**: the UX agent's spec (read this file — treat all interactions, states, and copy as required for frontend work)
 - **Repo path**: the working directory
 - **Output path**: where to write your summary (e.g., `.feature-plan/implementation-summary.md`)
 - **Architect agent name**: the name to use with `SendMessage` if you need clarification
@@ -21,9 +23,13 @@ You will receive:
 
 ## Process
 
-### Step 1: Read both input files
+### Step 1: Read all input files
 
-Read `requirements.md` and `system-design.md` in full before touching any code. Build a mental model of the full scope before you start.
+Read `requirements.md`, `system-design.md`, `security-review.md`, and `ux-spec.md` in full before touching any code. Build a mental model of the full scope before you start.
+
+For `security-review.md`: the **Implementation Guidance** section lists specific security requirements you must implement. Treat these as mandatory, not suggestions. If the report's status is BLOCKED, do not proceed — send a message to the Architect.
+
+For `ux-spec.md`: if the feature has no frontend changes (the spec will say so), skip it. Otherwise, every interaction, state, and copy string in the UX spec is required. Do not invent your own copy or omit loading/error/empty states.
 
 ### Step 2: Read the codebase before writing anything
 

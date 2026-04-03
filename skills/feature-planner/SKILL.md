@@ -1,7 +1,7 @@
 ---
 name: feature-planner
 description: >
-  Plan and scope new features using a collaborative 4-agent team: PM, Architect, Developer, and QA
+  Plan and scope new features using a collaborative 6-agent team: PM, Architect, Security, UX, Developer, and QA
   who can communicate with each other and write structured markdown artifacts. Use this skill whenever
   a user wants to implement something new, understand what needs to change to add a feature, write a
   technical spec, figure out which files or database tables need to change, or translate business
@@ -14,7 +14,7 @@ description: >
 
 # Feature Planner — Collaborative Agent Team
 
-Turns vague feature requirements into refined specs, system designs, working code, and QA validation — using four specialized agents that can communicate with each other and write persistent markdown artifacts.
+Turns vague feature requirements into refined specs, system designs, security reviews, UX specs, working code, and QA validation — using six specialized agents that can communicate with each other and write persistent markdown artifacts.
 
 ## What gets produced
 
@@ -24,6 +24,8 @@ All artifacts are written as markdown files to a `.feature-plan/` directory insi
 |---|---|---|
 | `requirements.md` | PM | Refined requirements spec |
 | `system-design.md` | Architect | System design document |
+| `security-review.md` | Security | Threat model, OWASP review, implementation guidance |
+| `ux-spec.md` | UX | User flows, component specs, copy, accessibility requirements |
 | `implementation-summary.md` | Developer | Summary of files created/modified |
 | `qa-report.md` | QA | Validation report and test cases |
 
@@ -34,30 +36,38 @@ All artifacts are written as markdown files to a `.feature-plan/` directory insi
 This is not a strictly sequential hand-off pipeline. Agents are named and can send messages to each other during their work. This allows them to surface ambiguities and resolve design conflicts without stalling.
 
 ```
-              ┌─────────────────────────────────────┐
-              │         Feature Planner              │
-              │                                      │
-  requirements│      ┌──────────┐                   │
-  ────────────┼──────►  PM      │◄──────────────────┼── Architect asks PM to
-              │      │  Agent   │   clarify req?     │   clarify ambiguous req
-              │      └────┬─────┘                   │
-              │           │ requirements.md          │
-              │      ┌────▼─────┐                   │
-              │      │ Architect│◄──────────────────┼── Developer flags
-              │      │  Agent   │   design gap?      │   design conflict
-              │      └────┬─────┘                   │
-              │           │ system-design.md         │
-              │      ┌────▼─────┐                   │
-              │      │Developer │◄──────────────────┼── QA flags
-              │      │  Agent   │   code gap?        │   missing impl
-              │      └────┬─────┘                   │
-              │           │ implementation-summary.md│
-              │      ┌────▼─────┐                   │
-              │      │  QA      │                   │
-              │      │  Agent   │                   │
-              │      └────┬─────┘                   │
-              │           │ qa-report.md             │
-              └─────────────────────────────────────┘
+              ┌──────────────────────────────────────────────┐
+              │              Feature Planner                 │
+              │                                              │
+  requirements│      ┌──────────┐                           │
+  ────────────┼──────►  PM      │◄──────────────────────────┼── Architect asks PM to
+              │      │  Agent   │   clarify req?             │   clarify ambiguous req
+              │      └────┬─────┘                           │
+              │           │ requirements.md                  │
+              │      ┌────▼─────┐                           │
+              │      │ Architect│◄──────────────────────────┼── Developer flags
+              │      │  Agent   │   design gap?              │   design conflict
+              │      └────┬─────┘                           │
+              │           │ system-design.md                 │
+              │   ┌───────┴────────┐  (parallel)            │
+              │ ┌─▼──────┐  ┌─────▼──┐                     │
+              │ │Security│  │  UX    │◄────────────────────┼── UX asks PM to
+              │ │ Agent  │  │ Agent  │  clarify UX req?     │   clarify behavior
+              │ └─┬──────┘  └────┬───┘                     │
+              │   │security- │ux-spec.md                    │
+              │   │review.md │                              │
+              │   └───────┬──┘                              │
+              │      ┌────▼─────┐                           │
+              │      │Developer │◄──────────────────────────┼── QA flags
+              │      │  Agent   │   code gap?                │   missing impl
+              │      └────┬─────┘                           │
+              │           │ implementation-summary.md        │
+              │      ┌────▼─────┐                           │
+              │      │  QA      │                           │
+              │      │  Agent   │                           │
+              │      └────┬─────┘                           │
+              │           │ qa-report.md                     │
+              └──────────────────────────────────────────────┘
 ```
 
 Agents communicate via `SendMessage`. Each agent is assigned a name when spawned. The orchestrator waits for each stage to complete before spawning the next — but agents within a stage can exchange messages freely.
@@ -99,11 +109,35 @@ The Architect reads the requirements, explores the codebase deeply, and writes `
 
 ---
 
-## Step 4: Spawn the Developer Agent
+## Step 4: Spawn Security and UX Agents (in parallel)
+
+Spawn both agents **at the same time** — they work independently from the same inputs and do not depend on each other.
+
+**Security agent** — Read `agents/security.md`. Spawn a subagent named **`security`** with:
+- Path to `requirements.md`
+- Path to `system-design.md`
+- The working directory / repo path
+- The output path: `.feature-plan/security-review.md`
+- The name of the Architect agent it can message for design changes: **`architect`**
+
+**UX agent** — Read `agents/ux.md`. Spawn a subagent named **`ux`** with:
+- Path to `requirements.md`
+- Path to `system-design.md`
+- The working directory / repo path
+- The output path: `.feature-plan/ux-spec.md`
+- The name of the PM agent it can message for UX clarifications: **`pm`**
+
+Wait for **both** to complete before proceeding. If the Security agent's recommendation is BLOCKED (critical design issues), surface this to the user and pause — do not spawn the Developer until the design is resolved.
+
+---
+
+## Step 5: Spawn the Developer Agent
 
 Read `agents/developer.md`. Spawn a subagent named **`developer`** with:
 - Path to `requirements.md`
 - Path to `system-design.md`
+- Path to `security-review.md`
+- Path to `ux-spec.md`
 - The working directory / repo path
 - The output path: `.feature-plan/implementation-summary.md`
 - The name of the Architect agent it can message for design questions: **`architect`**
@@ -112,11 +146,13 @@ The Developer implements the code and writes `implementation-summary.md`. If it 
 
 ---
 
-## Step 5: Spawn the QA Agent
+## Step 6: Spawn the QA Agent
 
 Read `agents/qa.md`. Spawn a subagent named **`qa`** with:
 - Path to `requirements.md`
 - Path to `system-design.md`
+- Path to `security-review.md`
+- Path to `ux-spec.md`
 - Path to `implementation-summary.md`
 - The working directory / repo path
 - The output path: `.feature-plan/qa-report.md`
@@ -126,21 +162,25 @@ The QA agent reads all implemented files, validates coverage, runs tests if poss
 
 ---
 
-## Step 6: Present final deliverables
+## Step 7: Present final deliverables
 
-Read all four markdown files and deliver them in one response, in this order:
+Read all six markdown files and deliver them in one response, in this order:
 
 1. **Refined Requirements** (from `requirements.md`)
 2. `---`
 3. **System Design** (from `system-design.md`)
 4. `---`
-5. **Implementation Summary** (from `implementation-summary.md`)
+5. **Security Review** (from `security-review.md`)
 6. `---`
-7. **QA Validation Report** (from `qa-report.md`)
+7. **UX Spec** (from `ux-spec.md`)
+8. `---`
+9. **Implementation Summary** (from `implementation-summary.md`)
+10. `---`
+11. **QA Validation Report** (from `qa-report.md`)
 
 Then tell the user:
 
-> "All four artifacts have been saved to `.feature-plan/`. The PM spec drives everything downstream — if any requirement looks wrong, correct it before acting on the implementation. The QA report flags any gaps or issues to address before shipping."
+> "All six artifacts have been saved to `.feature-plan/`. The PM spec drives everything downstream — if any requirement looks wrong, correct it before acting on the implementation. The QA report flags any gaps or issues to address before shipping."
 
 ---
 

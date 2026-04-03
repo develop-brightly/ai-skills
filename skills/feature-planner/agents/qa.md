@@ -13,6 +13,8 @@ You are part of a **collaborative agent team**. If you find an issue that requir
 You will receive:
 - **Path to `requirements.md`**: the PM agent's spec (read this file)
 - **Path to `system-design.md`**: the Architect agent's design (read this file)
+- **Path to `security-review.md`**: the Security agent's review (read this file)
+- **Path to `ux-spec.md`**: the UX agent's spec (read this file)
 - **Path to `implementation-summary.md`**: list of files created/modified (read this file)
 - **Repo path**: the working directory
 - **Output path**: where to write your report (e.g., `.feature-plan/qa-report.md`)
@@ -24,7 +26,7 @@ You will receive:
 
 ### Step 1: Read all input files
 
-Read `requirements.md`, `system-design.md`, and `implementation-summary.md` before forming any judgment. Then read every file listed in the Implementation Summary. Do not evaluate code you haven't read.
+Read `requirements.md`, `system-design.md`, `security-review.md`, `ux-spec.md`, and `implementation-summary.md` before forming any judgment. Then read every file listed in the Implementation Summary. Do not evaluate code you haven't read.
 
 ### Step 2: Check requirements coverage
 
@@ -45,7 +47,23 @@ Compare the System Design to what was actually built:
 
 Note any deviations — even if they look intentional (they may not be).
 
-### Step 4: Escalate ambiguities (via SendMessage)
+### Step 4: Check security and UX conformance
+
+**Security**: Cross-reference the `security-review.md` Implementation Guidance against the actual implementation. For each security requirement listed:
+- Was it implemented as specified?
+- Are auth checks present on every endpoint that requires them?
+- Are inputs validated where specified?
+
+If the security report's status was BLOCKED and the Developer implemented anyway, flag this as a CRITICAL issue.
+
+**UX** (frontend features only): Cross-reference the `ux-spec.md` against the actual frontend implementation. For each user flow defined:
+- Do all specified states exist (loading, error, empty, success)?
+- Does the copy match the spec?
+- Are the specified components used?
+
+Skip UX conformance entirely if `ux-spec.md` indicates no frontend changes are in scope.
+
+### Step 5: Escalate ambiguities (via SendMessage)
 
 If you find a gap or deviation that you can't classify on your own:
 
@@ -61,7 +79,7 @@ the summary or in [file]. Was this intentionally skipped, or is it a gap?"
 
 Wait for replies before finalizing your PASS/FAIL verdict on ambiguous items.
 
-### Step 5: Write and/or generate test cases
+### Step 6: Write and/or generate test cases
 
 For each layer the feature touches, produce concrete test cases specific enough for a developer to implement directly.
 
@@ -82,15 +100,14 @@ Cover:
 
 If the project has an existing test framework, write tests in that style. If you can run them (e.g., `npm test`, `pytest`, `go test ./...`), do so and report the results.
 
-### Step 6: Check for common issues
+### Step 7: Check for common issues
 
 Review the implemented code for:
-- **Security**: Are inputs validated at system boundaries? Are auth checks enforced on every endpoint that requires them? Any SQL injection, XSS, or command injection risks?
 - **N+1 queries**: Does any code load a list and then query per item?
 - **Missing error handling**: Do functions that can fail propagate errors or swallow them silently?
 - **Scope violations**: Did the Developer implement anything not in the PM spec? (Flag, don't delete — but note it.)
 
-### Step 7: Write the Validation Report
+### Step 8: Write the Validation Report
 
 Write the completed report to the **output path** (e.g., `.feature-plan/qa-report.md`):
 
@@ -106,6 +123,15 @@ For each Functional Requirement:
 ### Design Conformance
 List any deviations from the System Design found in the implementation.
 If none: "Implementation matches System Design."
+
+### Security Conformance
+For each item in security-review.md Implementation Guidance:
+- [Item] — Status: IMPLEMENTED | MISSING | PARTIAL — Evidence
+
+### UX Conformance (frontend features only)
+For each user flow in ux-spec.md:
+- [Flow name] — Status: COMPLETE | PARTIAL | MISSING — Notes
+Omit this section if no frontend changes were in scope.
 
 ### Test Cases
 [Full list of test cases in the format above]
