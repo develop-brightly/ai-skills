@@ -3,41 +3,88 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Do a full codebase audit on the repo at /Users/ericwellnitz/dev/ai-skills. I want the whole report — structure, stack, dependencies, git history, quality indicators, docs, everything.",
-      "expected_output": "A complete codebase-diligence-report.md written to the ai-skills repo root. The report contains all 10 sections in order (Executive Summary through Recommendations), uses severity emoji tags (🔴/🟡/🟢) in at least the sections that can produce findings, and ends with at least one concrete recommendation.",
+      "prompt": "Do a full codebase audit on the repo at /Users/ericwellnitz/dev/ai-skills. I want the whole report — structure, stack, AI tools, dependencies, git history, quality, security, docs, architecture, infrastructure, licensing, API surface, team maturity, everything.",
+      "expected_output": "A complete codebase-diligence-report.md written to the ai-skills repo root. The report contains all sections including the executive scorecard with anchor links, AI Tools & LLM Usage as the first detail section, and all 11 scorecard categories.",
       "files": [],
       "expectations": [
         "The report file codebase-diligence-report.md is written to the repo root",
-        "The report contains all required sections: Executive Summary, Repository Overview, Tech Stack, Dependency Health, Git History & Contributor Activity, Code Quality Indicators, Documentation Assessment, Configuration & Secrets Hygiene, Findings Summary, and Recommendations",
-        "At least one section contains a severity tag line using 🔴, 🟡, or 🟢 emoji",
-        "The Recommendations section contains at least one item tagged [CRITICAL], [IMPORTANT], or [NICE TO HAVE]",
-        "The report header contains the repo name and a generated date"
+        "The report header shows 'Depth: Standard'",
+        "The Executive Summary contains a Scorecard table with 11 categories, each with a Details anchor link",
+        "The Executive Summary contains a Top Risks section with severity-tagged items",
+        "The AI Tools & LLM Usage section appears before other detail sections and includes the AI Maturity Scorecard table with 4 dimensions (Adoption Level, Dependency Risk, Code Provenance Clarity, Governance Maturity)",
+        "The AI Tools section detects .claude/ directory and CLAUDE.md in this repo",
+        "All detail sections contain a severity header line (e.g., '🔴 N · 🟡 N · 🟢 N')",
+        "The report contains Security Posture, Architecture & Complexity, Infrastructure & Deployment, Licensing & Compliance, API Surface & Integrations, and Team & Process Maturity sections",
+        "The Findings Summary lists all 🔴 and 🟡 findings with section attribution",
+        "The Recommendations section contains items tagged [CRITICAL], [IMPORTANT], or [NICE TO HAVE]"
       ]
     },
     {
       "id": 2,
-      "prompt": "I just inherited a repo I've never seen before. Can you do a diligence report on it? Repo is at ~/dev/mystery-project. I want to understand the state of it — is it healthy, are there risks, what should I know?",
-      "expected_output": "A complete report written to ~/dev/mystery-project/codebase-diligence-report.md. Because this is a sparse repo, the report should explicitly call out missing elements (no README, no tests, no CI, etc.) and flag them appropriately with 🔴 or 🟡 severity. The Recommendations section should be non-empty and actionable.",
+      "prompt": "Give me a quick scan of the ai-skills repo. Just a fast overview.",
+      "expected_output": "A compact Quick Scan report written to the repo root. The report uses the 'At a Glance' table format, includes 5-7 key observations, and a recommendation about whether deeper analysis is warranted.",
       "files": [],
       "expectations": [
-        "The report is written to the target repo directory, not the current working directory",
-        "Absent elements (e.g. missing lock file, missing README, missing test directory) are reported as ❌ Absent rather than being silently omitted",
-        "The Findings Summary section contains at least one 🔴 or 🟡 finding",
-        "Each finding in the Recommendations section names a specific file or action (not vague advice like 'improve documentation')",
-        "The Executive Summary mentions the most significant risk or concern found"
+        "The report header shows 'Depth: Quick Scan'",
+        "The report contains an 'At a Glance' table with rows for Project Type, Tech Stack, Age/Activity, Contributors, AI Tool Adoption, Dependencies, and Secrets Hygiene",
+        "The report contains a Key Observations section with 5-7 severity-tagged bullets",
+        "The report contains a Recommendation section suggesting whether deeper analysis is needed",
+        "The report does NOT contain full detail sections like Architecture & Complexity or Licensing & Compliance",
+        "The report is substantially shorter than a Standard analysis"
       ]
     },
     {
       "id": 3,
-      "prompt": "Can you do a quick diligence on the ai-skills repo but just focus on the git history and contributors? I want to know who's been active, if there's a bus factor concern, and how commit discipline looks.",
-      "expected_output": "A shorter focused report written to the repo root containing only the Executive Summary, Git History & Contributor Activity section, and Recommendations. The directory structure, tech stack, dependency, quality, docs, and secrets sections are omitted. The git section contains commit count, contributor breakdown, bus factor assessment, and commit message pattern observations.",
+      "prompt": "I need a thorough due diligence on the ai-skills repo. We're evaluating it for acquisition. Deep audit please.",
+      "expected_output": "A comprehensive Deep Audit report. The orchestrator spawns 3 specialist agents (ai-tools-analyst, security-analyst, infra-compliance-analyst) and creates artifacts in .diligence-report/. The final report includes Cross-Cutting Findings.",
       "files": [],
       "expectations": [
-        "The report contains a Git History & Contributor Activity section with contributor names and commit counts",
-        "The report does NOT contain a Dependency Health section or a Documentation Assessment section",
-        "The report contains an Executive Summary and a Recommendations section",
-        "A bus factor assessment is included (either flagging a concern or confirming healthy distribution)",
-        "The report is shorter than a full analysis report would be — focused mode omits non-requested sections"
+        "The report header shows 'Depth: Deep Audit'",
+        "A .diligence-report/ directory is created with context.md, ai-tools.md, security.md, and infra-compliance.md artifacts",
+        "The AI Tools & LLM Usage section contains deeper analysis than Standard (e.g., AI co-author temporal trends, LLM usage tracing, governance deep dive)",
+        "The Security Posture section contains deeper analysis (auth flow tracing, injection pattern analysis, security header checks)",
+        "The report contains a Cross-Cutting Findings section identifying patterns across domains",
+        "The Executive Summary Scorecard has all 11 categories with anchor links"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Focus on AI tools usage in the ai-skills repo. I want to know what AI tools are being used, how much code is AI-generated, and what the governance looks like.",
+      "expected_output": "A focused report containing only the Executive Summary, AI Tools & LLM Usage section, and Recommendations. Other sections are omitted.",
+      "files": [],
+      "expectations": [
+        "The report contains an AI Tools & LLM Usage section with the AI Maturity Scorecard",
+        "The report detects .claude/ directory and CLAUDE.md as AI tool configurations",
+        "The report includes AI co-author commit analysis from git history",
+        "The report does NOT contain Dependency Health, Documentation Assessment, or Infrastructure sections",
+        "The report contains an Executive Summary and Recommendations section"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I just inherited a repo at ~/dev/mystery-project. Can you do a diligence report? I want to understand the state of it.",
+      "expected_output": "A Standard report written to the target repo. Missing elements are explicitly flagged as absent. Graceful degradation for any missing data.",
+      "files": [],
+      "expectations": [
+        "The report is written to the target repo directory, not the current working directory",
+        "Absent elements (missing lock file, missing README, missing tests, etc.) are reported as ❌ Absent rather than silently omitted",
+        "The Findings Summary contains at least one 🔴 or 🟡 finding",
+        "Recommendations name specific files or actions, not vague advice",
+        "The Executive Summary mentions the most significant risk found",
+        "The AI Tools section reports findings (even if 'No AI tools detected')"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Deep audit on the ai-skills repo but only focus on security. I want a thorough security review.",
+      "expected_output": "A Deep Audit focused on security. Only the security-analyst agent is spawned. The report contains Executive Summary, Security Posture (deep), and Recommendations.",
+      "files": [],
+      "expectations": [
+        "The security-analyst agent is spawned and writes .diligence-report/security.md",
+        "The report contains a detailed Security Posture section with subsections for secrets hygiene, authentication, input validation, security headers, and dependency security",
+        "The report does NOT contain AI Tools, Architecture, Infrastructure, or Team Maturity sections",
+        "The report contains Executive Summary and Recommendations",
+        "The ai-tools-analyst and infra-compliance-analyst agents are NOT spawned"
       ]
     }
   ]
